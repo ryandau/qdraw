@@ -101,14 +101,6 @@ def connect(token: Optional[str] = None, instance: Optional[str] = None):
     return QiskitRuntimeService(**kwargs)
 
 
-def save_account(token: str, instance: Optional[str] = None) -> None:
-    from qiskit_ibm_runtime import QiskitRuntimeService
-
-    QiskitRuntimeService.save_account(
-        channel="ibm_quantum_platform", token=token, instance=instance, overwrite=True
-    )
-
-
 def readout_errors(backend) -> Dict[int, Optional[float]]:
     errs: Dict[int, Optional[float]] = {}
     try:
