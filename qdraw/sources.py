@@ -16,6 +16,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 from .bell import N_BELL_QUBITS, add_bell_pairs
 
 SIM_WIDTH = 16  # qubits per simulated RNG circuit; keeps the statevector small
+MAX_READOUT_ERROR = 0.05  # skip qubits the calibration says misread more often than this
 
 
 @dataclass
@@ -126,9 +127,15 @@ def choose_layout(
     faulty: set,
     n_rng: Optional[int],
     bell: bool,
+    max_readout_error: float = MAX_READOUT_ERROR,
 ) -> Tuple[List[int], List[int]]:
-    """Pick Bell pairs on the cleanest coupled qubits, then RNG qubits by readout error."""
-    good = {q: e for q, e in errors.items() if q not in faulty and e is not None}
+    """Pick Bell pairs on the cleanest coupled qubits, then RNG qubits by readout error.
+
+    Qubits whose calibrated readout error exceeds `max_readout_error` are left out:
+    conditioning would fix their bias, but they waste shots and hurt the Bell pairs.
+    """
+    good = {q: e for q, e in errors.items()
+            if q not in faulty and e is not None and e <= max_readout_error}
     if not good:
         good = {q: 0.0 for q in errors if q not in faulty}
 

@@ -125,14 +125,22 @@ def test_replay_reproduces_record(tmp_path):
 
 
 def test_choose_layout_prefers_low_readout_error():
-    errors = {q: 0.01 * (q + 1) for q in range(20)}
+    errors = {q: 0.001 * (q + 1) for q in range(20)}
     errors[3] = 0.5  # bad qubit
     edges = [(q, q + 1) for q in range(19)]
     rng_q, bell_q = choose_layout(errors, edges, faulty={19}, n_rng=6, bell=True)
+    assert 3 not in bell_q  # 0.5 readout error exceeds the cutoff
     assert len(bell_q) == 8 and len(set(bell_q)) == 8
     assert all((a, b) in edges or (b, a) in edges for a, b in zip(bell_q[::2], bell_q[1::2]))
     assert len(rng_q) == 6 and 3 not in rng_q and 19 not in rng_q
     assert not set(rng_q) & set(bell_q)
+
+
+def test_choose_layout_excludes_noisy_qubits_when_unlimited():
+    errors = {q: 0.01 for q in range(12)}
+    errors[4] = 0.33
+    rng_q, bell_q = choose_layout(errors, [], faulty=set(), n_rng=None, bell=False)
+    assert 4 not in rng_q and len(rng_q) == 11
 
 
 def test_gamespec_validation():

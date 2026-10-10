@@ -6,22 +6,24 @@ Comes with Australian lottery presets and takes any "pick k from n" shape.
 ```
 $ qdraw draw --game ozlotto --games 3
 
-Oz Lotto: 7 from 1-47   source: ibm_torino
+Oz Lotto: 7 from 1-47   source: ibm_fez
 
-  Game  1:   1  3  6  9 32 36 43
-  Game  2:   6 10 13 16 26 33 38
-  Game  3:   2 10 16 18 21 28 42
+  Game  1:   1 14 27 28 36 39 47
+  Game  2:   1  4  7 22 39 43 44
+  Game  3:   2 22 30 31 40 41 45
 
-  raw bits        31,744 from 124 qubits x 256 shots, ones 0.489, worst qubit 87 at 0.441
-  min-entropy     0.934 per raw bit (1.000 is perfect)
-  conditioned     7,802 bits kept (25%), ones 0.501, 84 used for 3 games
-  Bell test       S = 2.64 +/- 0.03  (classical <= 2, quantum <= 2.83)  non-classical
+  raw bits        37,888 from 148 qubits x 256 shots, ones 0.501, worst qubit 15 at 0.414
+  min-entropy     0.978 per raw bit (1.000 is perfect)
+  conditioned     9,538 bits kept (25%), ones 0.501, 78 used for 3 games
+  Bell test       S = 2.76 +/- 0.09  (classical <= 2, quantum <= 2.83)  non-classical
 
-  job      d3k9...
-  record   ~/.qdraw/draws/2026-10-10T051203Z_ibm_d3k9....json
+  job      db4rq2amb58s7389jtj0
+  record   ~/.qdraw/draws/2026-10-10T060842Z_ibm_db4rq2amb58s7389jtj0.json
 ```
 
-*(Illustrative output. Replace with a real run once you have an account.)*
+Real output from IBM's 156-qubit `ibm_fez`, 10 October 2026. The job used two
+seconds of processor time and sat in the free-plan queue for an hour and
+three quarters.
 
 ## Why
 
@@ -40,9 +42,14 @@ Details and how to read the numbers: [docs/how-it-works.md](docs/how-it-works.md
 ```bash
 git clone https://github.com/ryandau/qdraw.git
 cd qdraw
-python -m venv .venv && source .venv/bin/activate
+python3.12 -m venv .venv && source .venv/bin/activate
 pip install -e .
 ```
+
+Use Python 3.10 or newer built against OpenSSL. The Python 3.9 that ships with
+Apple's command line tools is built against LibreSSL and fails the TLS
+handshake to IBM Cloud with `tlsv1 alert internal error`. `brew install
+python@3.12` fixes it.
 
 ## IBM Quantum setup
 
